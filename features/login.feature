@@ -9,7 +9,7 @@ Feature: OrangeHRM User Management
     Given I am on the OrangeHRM login page
 
   @regression @addUser
-  Scenario: Add a PIM employee and then create an Admin user for that employee
+  Scenario: Add a PIM employee and then add user with random role(Admin/ESS) and status
     Given I am logged in as admin
     When I navigate to the PIM section
     And I click on the Add Employee button

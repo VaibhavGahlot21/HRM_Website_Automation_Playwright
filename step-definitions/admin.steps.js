@@ -7,6 +7,16 @@ function getRandomUsername() {
   return `user_${Math.random().toString(36).substring(2, 8)}`;
 }
 
+function getRandomRole() {
+  const roles = ['Admin', 'ESS'];
+  return roles[Math.floor(Math.random() * roles.length)];
+}
+
+function getRandomStatus() {
+  const statuses = ['Enabled', 'Disabled'];
+  return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
 When('I navigate to the Admin section', async function () {
   this.adminPage = new AdminPage(this.page);
   await this.adminPage.navigateToAdmin();
@@ -28,13 +38,20 @@ When('I fill in the Add User form for the added employee', async function () {
   }
 
   const username = getRandomUsername();
-  this.createdUsername = username;
+  const role = getRandomRole();
+  const status = getRandomStatus();
   const password = process.env.NEW_USER_PASSWORD || 'Test@1234!';
 
+  this.createdUsername = username;
+  this.selectedRole = role;
+  this.selectedStatus = status;
+
+  console.log(`Creating user with Role: ${role}, Status: ${status}`);
+
   await this.adminPage.fillAddUserForm({
-    role: 'Admin',
+    role,
     employeeName: this.addedEmployeeName,
-    status: 'Enabled',
+    status,
     username,
     password,
   });
