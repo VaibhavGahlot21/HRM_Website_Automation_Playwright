@@ -1,13 +1,15 @@
 // pages/LoginPage.js
+const locators = require('./locators');
+
 class LoginPage {
   constructor(page) {
     this.page = page;
     // Locators
-    this.usernameInput   = page.locator('input[name="username"]');
-    this.passwordInput   = page.locator('input[name="password"]');
-    this.loginButton     = page.locator('button[type="submit"]');
-    this.errorMessage    = page.locator('.oxd-alert-content-text');
-    this.dashboardHeader = page.locator('.oxd-topbar-header-breadcrumb h6');
+    this.usernameInput   = page.locator(locators.login.usernameInput);
+    this.passwordInput   = page.locator(locators.login.passwordInput);
+    this.loginButton     = page.locator(locators.login.loginButton);
+    this.errorMessage    = page.locator(locators.login.errorMessage);
+    this.dashboardHeader = page.locator(locators.login.dashboardHeader);
   }
 
   async navigate() {
