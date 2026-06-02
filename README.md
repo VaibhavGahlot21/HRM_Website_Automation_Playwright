@@ -1,150 +1,123 @@
-# OrangeHRM Playwright BDD Cucumber Automation
+# HRM Website Automation — Playwright + Cucumber BDD
 
-End-to-end test automation for OrangeHRM using **Playwright + Cucumber BDD**.
+End-to-end tests for the OrangeHRM demo site using Playwright with Cucumber (Gherkin) step definitions.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project structure (key files)
 
 ```
-orangehrm-playwright-bdd/
+HRM_Website_Automation/
 ├── features/
-│   └── user_management.feature     # BDD scenarios (Gherkin)
+│   └── login.feature
 ├── step-definitions/
-│   ├── login.steps.js              # Login step implementations
-│   └── admin.steps.js              # Admin/User Management steps
+│   ├── login.steps.js
+│   ├── admin.steps.js
+│   └── pim.steps.js
 ├── pages/
-│   ├── LoginPage.js                # Page Object: Login
-│   └── AdminPage.js                # Page Object: Admin / Add User
+│   ├── LoginPage.js
+│   ├── AdminPage.js
+│   └── PIMPage.js
 ├── support/
-│   ├── world.js                    # Cucumber World (Playwright setup)
-│   └── generateReport.js           # HTML report generator
-├── reports/                        # Auto-generated test reports
-├── .env                            # Environment variables (credentials, URL)
-├── cucumber.js                     # Cucumber configuration
+│   ├── world.js
+│   └── generateReport.js
+├── reports/
+│   ├── cucumber-report.html
+│   └── cucumber-report.json
+├── cucumber.js
 └── package.json
 ```
 
+Refer to the implementation files directly:
+
+- Feature example: [features/login.feature](features/login.feature)
+- Login steps: [step-definitions/login.steps.js](step-definitions/login.steps.js)
+- Page object: [pages/LoginPage.js](pages/LoginPage.js)
+- World (Playwright setup): [support/world.js](support/world.js)
+- Report generator: [support/generateReport.js](support/generateReport.js)
+- Cucumber config: [cucumber.js](cucumber.js)
+- Package manifest: [package.json](package.json)
+- Reports: [reports/cucumber-report.html](reports/cucumber-report.html) and [reports/cucumber-report.json](reports/cucumber-report.json)
+
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick start
 
-### 1. Install Dependencies
+1. Install dependencies:
 
 ```bash
 npm install
-npm run install:browsers
 ```
 
-### 2. Configure Environment
-
-Edit `.env` to set credentials and base URL:
-
-```env
-BASE_URL=https://opensource-demo.orangehrmlive.com
-ADMIN_USERNAME=Admin
-ADMIN_PASSWORD=admin123
-
-NEW_USER_USERNAME=testuser_01
-NEW_USER_PASSWORD=Test@1234!
-```
-
-### 3. Run Tests
+2. Install Playwright browsers (if your project needs them):
 
 ```bash
-# Run all tests (headless)
+npx playwright install
+```
+
+3. Run tests:
+
+```bash
+# Run all scenarios (headless)
 npm test
 
-# Run with browser visible
-npm run test:headed
+# Run a specific feature file
+npx cucumber-js features/login.feature
 
-# Run and generate HTML report
-npm run test:report
-```
-
-### 4. Run Specific Tags
-
-```bash
-# Smoke tests only
+# Run scenarios with tags
 npx cucumber-js --tags @smoke
-
-# Regression suite
-npx cucumber-js --tags @regression
-
-# Add user scenario
-npx cucumber-js --tags @addUser
-
-# Negative tests
-npx cucumber-js --tags @negative
 ```
 
----
-
-## 🧪 Test Scenarios
-
-| Tag | Scenario | Description |
-|-----|----------|-------------|
-| `@smoke @login` | Successful admin login | Verifies Admin can log in |
-| `@smoke @addUser` | Add new Admin user | Full Add User form flow |
-| `@regression @addUser` | Add users with different roles | Data-driven: Admin / ESS / Disabled |
-| `@regression @validation` | Required field validation | Empty form submission |
-| `@negative @login` | Invalid credentials | Wrong username/password |
+If your repository defines npm scripts for headed runs or reporting, you can also run them via `npm run <script>`; see [package.json](package.json) for available scripts.
 
 ---
 
-## 🔧 Design Principles
+## 🧪 Mapping tests to code
 
-### Page Object Model (POM)
-Each page has its own class (`pages/`) encapsulating all locators and actions. Steps stay clean and readable.
-
-### BDD with Gherkin
-Scenarios are written in plain English under `features/`. Business stakeholders can read and contribute.
-
-### Cucumber World
-`support/world.js` bootstraps Playwright before every scenario and tears it down after. Screenshots are automatically captured on failure.
-
-### Environment Variables
-All sensitive data lives in `.env` — never hardcoded in tests.
+- The `login.feature` scenarios are implemented in [step-definitions/login.steps.js](step-definitions/login.steps.js) and use the `LoginPage` page object: [pages/LoginPage.js](pages/LoginPage.js).
+- Admin-related scenarios use [step-definitions/admin.steps.js](step-definitions/admin.steps.js) and [pages/AdminPage.js](pages/AdminPage.js).
+- PIM scenarios use [step-definitions/pim.steps.js](step-definitions/pim.steps.js) and [pages/PIMPage.js](pages/PIMPage.js).
 
 ---
 
 ## 📊 Reports
 
-After `npm run test:report`, open:
-```
-reports/html/index.html
-```
+After running tests the framework writes JSON/HTML reports to the `reports/` folder. Open the HTML report locally:
 
-A rich HTML report is generated with pass/fail counts, scenario details, and screenshots for failures.
+```bash
+start reports/cucumber-report.html
+```
 
 ---
 
-## ⚙️ Configuration Options
+## 🔧 Contributing / Extending
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HEADLESS` | `true` | `false` to watch browser |
-| `BROWSER` | `chromium` | `firefox` or `webkit` |
-| `SLOW_MO` | `0` | Add delay (ms) between actions |
+To add a new feature:
+1. Add `features/your_feature.feature` with Gherkin scenarios.
+2. Implement steps in `step-definitions/your_feature.steps.js`.
+3. Add or reuse page objects in `pages/`.
 
----
+Page object example:
 
-## 🏗️ Extending the Framework
-
-**Add a new feature:**
-1. Create `features/my_feature.feature`
-2. Write Gherkin scenarios
-3. Create `step-definitions/my_feature.steps.js`
-4. Add page object in `pages/MyPage.js` if needed
-
-**Add a new page object:**
 ```js
 class MyPage {
   constructor(page) {
     this.page = page;
     this.someElement = page.locator('#my-selector');
   }
-  async doSomething() { ... }
+  async doSomething() {
+    await this.someElement.click();
+  }
 }
 module.exports = MyPage;
 ```
+
+---
+
+If you'd like, I can also:
+
+- Add a short `CONTRIBUTING.md` with run instructions.
+- Inspect `package.json` and add or standardize npm scripts for common runs.
+
+---
+
